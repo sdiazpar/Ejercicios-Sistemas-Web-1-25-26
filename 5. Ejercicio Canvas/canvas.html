@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Peces</title>
+  <style>
+    body {
+      margin: 0;
+      background: rgb(44, 158, 196);
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const peces = [];
+
+    function dibujarPez(pez) {
+      ctx.fillStyle = pez.color;
+      ctx.beginPath();
+      ctx.ellipse(pez.x, pez.y, 20, 10, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(pez.x - 20, pez.y);
+      ctx.lineTo(pez.x - 30, pez.y - 8);
+      ctx.lineTo(pez.x - 30, pez.y + 8);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function animar() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let pez of peces) {
+        pez.x += pez.velocidad;
+        if (pez.x > canvas.width + 30) {
+          pez.x = -30;
+          pez.y = Math.random() * canvas.height;
+        }
+        dibujarPez(pez);
+      }
+      requestAnimationFrame(animar);
+    }
+
+    animar();
+
+    canvas.addEventListener("click", (e) => {
+      peces.push({
+        x: e.clientX,
+        y: e.clientY,
+        velocidad: 2 + Math.random() * 2,
+        color: `hsl(${Math.random() * 360}, 70%, 60%)`
+      });
+    });
+    
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
