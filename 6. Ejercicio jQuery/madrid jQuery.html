@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Madrid jQuery</title>
+    <link rel="icon" type="image/x-icon" href="madrid.png">
+    <style type="text/css">
+        #formulario {
+            margin-top: 50px;
+            display: none; 
+            margin-left: 40px;           
+        }
+        input {
+            display: block;
+        }        
+        .hidden {
+            display: none;
+        }
+    </style>
+    <script src=https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js ></script>
+</head>
+<body>
+    <div id="containerPrincipal">
+        <h1>Bienvenidos a Madrid</h1>
+        <p>Madrid es un municipio y una ciudad de España. La localidad, 
+            con categoría histórica de villa, es la capital del Estado y de
+                la Comunidad de Madrid. <br>En su término municipal, el más poblado 
+            de España, su población es de 3 416 771 habitantes (INE 2024), 
+            constituyéndose como la segunda ciudad más poblada de la Unión Europea,<br>
+                así como su área metropolitana, con 6 779 888 habitantes empadronados.</p>
+        <h3>Cosas que debes visitar</h3>
+        <ol>
+            <li>Universidad CEU San Pablo</li>
+            <li>Estadio Santiago Bernabéu</li>
+            <li>Museo del Prado</li>
+        </ol>
+        <a href="https://www.iberia.com/es/vuelos-baratos/Madrid/">Vuelos baratos</a><br><br>
+        <label for="visita">Desde dónde nos visitas:</label>
+        <select name="visita" id="visita">
+            <option value="barcelona">Barcelona</option>
+            <option value="valencia">Valencia</option>
+            <option value="santander">Santander</option>
+            <option value="sevilla">Sevilla</option>
+        </select>    
+        <h3>Regístrate más abajo para hacerte madrileño:</h3>
+        <button id="botonRegistro">Registrarse</button>
+    </div>
+    <div id="formulario">
+        <h2>Formulario para ser madrileño</h2>
+        <form id="formularioRegistro">
+            <input type="text" id="nombre" placeholder="Nombre y Apellidos">
+            <input type="email" id="email" placeholder="Correo electrónico">
+            <input type="tel" id="telefono" placeholder="Teléfono">
+            <input type="password" id="password" placeholder="Contraseña">
+            <button type="submit">Enviar</button>
+            <button type="button" id="botonCancelar">Cancelar</button>
+        </form>
+        <p id="mensajeExito" class="hidden">¡Ya eres madrileño!</p>
+    </div>
+    <script>
+        $(document).ready(function() {           
+            $('#botonRegistro').click(function() {
+                $('#containerPrincipal').hide();
+                $('#formulario').show();
+            });
+            $('#botonCancelar').click(function() {
+                $('#formulario').hide();
+                $('#containerPrincipal').show();
+                $('#formularioRegistro')[0].reset();
+                $('#mensajeExito').addClass('hidden');
+            });
+            $('#formularioRegistro').submit(function(event) {
+                event.preventDefault();
+                const nombre = $('#nombre').val();
+                const email = $('#email').val();
+                const telefono = $('#telefono').val();
+                const password = $('#password').val();
+                if (!validateForm(nombre, email, telefono, password)) {
+                    alert("Te has dejado algo sin rellenar.");
+                    return;
+                }
+                $('#mensajeExito').removeClass('hidden');
+                $('#formularioRegistro')[0].reset();
+            });
+            function validateForm(nombre, email, telefono, password) {
+                const nombreRegex = /^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$/;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                const telefonoRegex = /^\d+$/;
+                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+                if (!nombre || nombre.split(' ').length < 2 || !nombreRegex.test(nombre)) {
+                    alert('Tienes que poner nombre y apellidos.');
+                    return false;
+                }
+                if (!emailRegex.test(email)) {
+                    alert('Correo electrónico no válido.');
+                    return false;
+                }
+                if (!telefonoRegex.test(telefono)) {
+                    alert('Sólo números, no pongas espacios.');
+                    return false;
+                }
+                if (!passwordRegex.test(password)) {
+                    alert('La contraseña tiene que tener mínimo 8 caracteres, con una mayúscula, una minúscula y un número.');
+                    return false;
+                }
+                return true;
+            }
+        });
+    </script>
+</body>
+</html>
