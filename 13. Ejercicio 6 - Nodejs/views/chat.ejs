@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body class="chat-page">
+    <h1>Chat</h1>
+    <p>Bienvenido, <strong><%= username %></strong> | <a href="/logout">Cerrar sesión</a></p>
+    
+    <div id="mensajes"></div>
+    
+    <form id="formulario">
+        <input type="text" id="texto" placeholder="Escribe tu mensaje..." required>
+        <button type="submit">Enviar</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const usuario = '<%= username %>';
+        const mensajesDiv = document.getElementById('mensajes');
+        const formulario = document.getElementById('formulario');
+        const textoInput = document.getElementById('texto');
+
+        socket.on('historial', (mensajes) => {
+            mensajesDiv.innerHTML = '';
+            mensajes.forEach(msg => mostrarMensaje(msg));
+        });
+
+        socket.on('nuevoMensaje', (msg) => {
+            mostrarMensaje(msg);
+        });
+
+        formulario.addEventListener('submit', (e) => {
+            e.preventDefault();
+            socket.emit('mensaje', {
+                usuario: usuario,
+                texto: textoInput.value
+            });
+            textoInput.value = '';
+            textoInput.focus();
+        });
+
+        function mostrarMensaje(msg) {
+            const div = document.createElement('div');
+            div.className = 'mensaje';
+            div.innerHTML = `
+                <span class="usuario">${msg.usuario}:</span> ${msg.texto}
+                <span class="hora">${msg.fecha}</span>
+            `;
+            mensajesDiv.appendChild(div);
+            mensajesDiv.scrollTop = mensajesDiv.scrollHeight;
+        }
+    </script>
+</body>
+</html>
